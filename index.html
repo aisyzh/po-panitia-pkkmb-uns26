@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pembelian Atribut Panitia PKKMB</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060910;
+    --surface: rgba(255,255,255,0.04);
+    --border: rgba(255,255,255,0.08);
+    --border-active: rgba(99,179,237,0.6);
+    --accent: #3b9eff;
+    --accent2: #00d4aa;
+    --accent3: #ff6b6b;
+    --text: #f0f4ff;
+    --text-muted: rgba(240,244,255,0.45);
+    --text-dim: rgba(240,244,255,0.25);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+  .bg-canvas {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% 0%, rgba(59,158,255,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 85% 20%, rgba(0,212,170,0.12) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 60% at 50% 100%, rgba(99,60,255,0.15) 0%, transparent 60%),
+      var(--bg);
+  }
+  .grid-overlay {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.04;
+    background-image: linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .page { position: relative; z-index: 2; max-width: 900px; margin: 0 auto; padding: 40px 20px 80px; }
+  .header { text-align: center; margin-bottom: 56px; }
+  .header h1 {
+    font-family: 'Syne', sans-serif; font-size: clamp(28px, 6vw, 46px); font-weight: 800;
+    line-height: 1.1; letter-spacing: -1px;
+    background: linear-gradient(135deg, #fff 20%, #93c5fd 60%, #6ee7b7);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 12px; animation: fadeUp .5s .1s ease both; opacity: 0;
+  }
+  .header h4 { color: var(--text-muted); font-weight: 400; line-height: 1.8; margin-top: 15px; font-size: 14px; }
+  .steps {
+    display: flex; align-items: center; justify-content: center;
+    gap: 0; margin-bottom: 48px; animation: fadeUp .5s .3s ease both; opacity: 0;
+  }
+  .step { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; letter-spacing: .5px; color: var(--text-dim); transition: color .3s; }
+  .step.active { color: var(--accent); }
+  .step.done { color: var(--accent2); }
+  .step-num {
+    width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid currentColor;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-family: 'Syne', sans-serif; font-weight: 700; transition: all .3s;
+  }
+  .step.active .step-num { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .step.done .step-num { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+  .step-line { width: 48px; height: 1px; background: var(--border); margin: 0 4px; }
+  .section { display: none; animation: fadeUp .4s ease both; }
+  .section.active { display: block; }
+  .section-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+  .section-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; }
+  
+  /* STYLING KARTU PRODUK INTERAKTIF */
+  .products-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+  .product-card {
+    background: rgba(255,255,255,0.02); border: 1.5px solid var(--border);
+    border-radius: var(--radius); overflow: hidden; position: relative;
+    cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .product-card::after {
+    content: 'Pilih Item'; position: absolute; top: 12px; right: 12px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 4px 10px;
+    font-size: 10px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+    transition: all 0.2s;
+  }
+  .product-card:hover {
+    border-color: rgba(59,158,255,0.4); transform: translateY(-2px);
+    background: rgba(255,255,255,0.04);
+  }
+  
+  .product-card.selected {
+    background: rgba(0, 212, 170, 0.04); border: 2px solid var(--accent2);
+    box-shadow: 0 8px 24px rgba(0, 212, 170, 0.15); opacity: 1 !important; filter: none !important;
+  }
+  .product-card.selected::after {
+    content: '✓ Terpilih'; background: var(--accent2); color: #000; border-color: var(--accent2);
+  }
+
+  .products-grid.has-selection .product-card:not(.selected) {
+    opacity: 0.35; filter: grayscale(40%) blur(0.5px); border-color: var(--border);
+  }
+  .products-grid.has-selection .product-card:not(.selected)::after {
+    content: 'Tidak Dipilih'; background: transparent; color: var(--text-dim); border-color: transparent;
+  }
+
+  .product-img {
+    width: 100%; aspect-ratio: 1.4;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    display: flex; align-items: center; justify-content: center; font-size: 48px;
+    transition: all 0.3s;
+  }
+  .product-card.selected .product-img {
+    background: linear-gradient(135deg, rgba(0,212,170,0.12), rgba(59,158,255,0.05));
+  }
+  .product-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .product-info { padding: 16px; }
+  .product-name { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .product-price { font-size: 13px; color: var(--accent2); font-weight: 600; }
+  
+  /* MAIN GROUP PRE-HEADLINE DETAIL PEMESANAN */
+  .main-form-title {
+    font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800;
+    letter-spacing: 0.5px; text-transform: uppercase; margin: 40px 0 16px 0;
+    background: linear-gradient(135deg, #fff 40%, var(--text-muted));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .main-form-title::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); margin-left: 4px; }
+
+  .order-config { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; }
+  .order-config-title {
+    font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 18px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .order-config-title::before { content: ''; display: block; width: 3px; height: 14px; background: var(--accent); border-radius: 2px; }
+  .detail-bundle-box { display: flex; flex-direction: column; gap: 20px; }
+  .detail-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 18px; transition: opacity 0.3s; }
+  .detail-card-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: var(--accent); margin-bottom: 14px; padding-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .size-chart-img { width: 100%; max-width: 480px; border-radius: 8px; margin-bottom: 16px; display: block; border: 1px solid var(--border); }
+  .size-note { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; background: rgba(255,213,60,0.07); border: 1px solid rgba(255,213,60,0.15); border-radius: 8px; padding: 8px 12px; }
+  .fields-grid-pdh { display: grid; grid-template-columns: 1.5fr 1fr; gap: 14px; }
+  .field { margin-bottom: 14px; }
+  .field:last-child { margin-bottom: 0; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  label { display: block; font-size: 11px; font-weight: 600; letter-spacing: .5px; color: var(--text-muted); margin-bottom: 7px; text-transform: uppercase; }
+  input[type=text], input[type=email], input[type=tel] {
+    width: 100%; background: rgba(255,255,255,0.05); border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm); padding: 12px 14px;
+    font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; color: var(--text);
+    outline: none; transition: border-color .2s, background .2s;
+  }
+  select {
+    width: 100%; background: rgba(255,255,255,0.05); border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm); padding: 12px 14px;
+    font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; color: var(--text);
+    outline: none; transition: border-color .2s, background .2s;
+    -webkit-appearance: none; pointer-events: auto;
+  }
+  input:focus, select:focus { border-color: var(--border-active); background: rgba(59,158,255,0.06); }
+  select option { background: #0f1520; }
+  .subtotal-container {
+    display: flex; justify-content: space-between; align-items: center;
+    background: rgba(0,212,170,0.03); border: 1px dashed rgba(0,212,170,0.25);
+    padding: 16px; border-radius: var(--radius-sm); margin-top: 16px;
+  }
+  .subtotal-text { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600; color: var(--text-muted); }
+  .subtotal-amount { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: var(--accent2); }
+  .total-box { background: linear-gradient(135deg, rgba(59,158,255,0.1), rgba(0,212,170,0.07)); border: 1px solid rgba(59,158,255,0.25); border-radius: var(--radius); padding: 20px 24px; margin: 20px 0; }
+  .total-rows { display: flex; flex-direction: column; gap: 8px; }
+  .total-row { display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+  .total-row .label-t { color: var(--text-muted); }
+  .total-row .val { font-weight: 600; }
+  .total-row.grand { border-top: 1px solid var(--border); padding-top: 12px; margin-top: 4px; }
+  .total-row.grand .label-t { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: var(--text); }
+  .total-row.grand .val { font-family: 'Syne', sans-serif; font-size: 20px; color: var(--accent2); }
+  .payment-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .payment-opt { border: 1.5px solid var(--border); border-radius: var(--radius); padding: 16px; cursor: pointer; transition: all .2s; text-align: center; }
+  .payment-opt:hover { border-color: rgba(59,158,255,0.4); }
+  .payment-opt.selected { border-color: var(--accent); background: rgba(59,158,255,0.08); }
+  .payment-opt-icon { font-size: 28px; margin-bottom: 8px; }
+  .payment-opt-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .payment-opt-desc { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+  .payment-opt-amount { font-size: 16px; font-weight: 600; color: var(--accent2); margin-top: 8px; }
+  .qris-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; text-align: center; margin-bottom: 16px; }
+  .qris-img { width: 240px; height: 240px; margin: 0 auto 12px; background: #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center; padding: 12px; overflow: visible; }
+  .qris-img img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .qris-label { font-size: 13px; color: var(--text-muted); }
+  .qris-name { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; margin-top: 4px; }
+  .upload-zone { border: 2px dashed var(--border); border-radius: var(--radius); padding: 32px 24px; text-align: center; cursor: pointer; transition: all .2s; position: relative; }
+  .upload-zone:hover { border-color: rgba(59,158,255,0.4); background: rgba(59,158,255,0.03); }
+  .upload-zone.has-file { border-color: rgba(0,212,170,0.4); background: rgba(0,212,170,0.05); }
+  .upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  .upload-icon { font-size: 32px; margin-bottom: 10px; }
+  .upload-text { font-size: 14px; font-weight: 500; }
+  .upload-text span { color: var(--accent); }
+  .upload-sub { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
+  .upload-preview { font-size: 13px; color: var(--accent2); margin-top: 8px; font-weight: 600; }
+  .nav-buttons { display: flex; gap: 12px; margin-top: 32px; }
+  .btn-back { flex: 0 0 auto; padding: 14px 24px; background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: all .2s; }
+  .btn-back:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+  .btn-next { flex: 1; padding: 16px; background: linear-gradient(135deg, #1d6fe8, #0ea5e9); border: none; border-radius: var(--radius-sm); font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 800; color: #fff; cursor: pointer; transition: all .2s; box-shadow: 0 8px 32px rgba(29,111,232,0.35); }
+  .btn-next:hover { transform: translateY(-2px); }
+  .btn-submit { flex: 1; padding: 16px; background: linear-gradient(135deg, #059669, #0ea5e9); border: none; border-radius: var(--radius-sm); font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 800; color: #fff; cursor: pointer; transition: all .2s; box-shadow: 0 8px 32px rgba(5,150,105,0.35); }
+  .btn-submit:hover { transform: translateY(-2px); }
+  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .success-screen { text-align: center; padding: 60px 20px; animation: fadeUp .5s ease both; }
+  .success-icon { width: 80px; height: 80px; margin: 0 auto 24px; background: linear-gradient(135deg, rgba(0,212,170,0.2), rgba(59,158,255,0.1)); border: 2px solid rgba(0,212,170,0.4); border-radius: 50%; display: grid; place-items: center; font-size: 36px; }
+  .success-title { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; background: linear-gradient(135deg, #6ee7b7, #93c5fd); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
+  .success-sub { color: var(--text-muted); font-size: 15px; line-height: 1.8; }
+  .error-msg { font-size: 11px; color: var(--accent3); margin-top: 5px; display: none; }
+  .field.error input, .field.error select { border-color: var(--accent3); }
+  .field.error .error-msg { display: block; }
+  .info-tag { display: flex; align-items: flex-start; gap: 8px; background: rgba(255,213,60,0.08); border: 1px solid rgba(255,213,60,0.2); border-radius: 8px; padding: 10px 14px; font-size: 12px; color: rgba(255,213,60,0.85); margin-bottom: 16px; line-height: 1.6; }
+  .contact-btn {
+    display: inline-flex; align-items: center; gap: 8px; margin-top: 20px;
+    background: linear-gradient(135deg, #25d366, #128c7e);
+    color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 99px;
+    font-size: 13px; font-weight: 600; box-shadow: 0 4px 20px rgba(37,211,102,0.3); transition: all .2s;
+  }
+  .contact-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(37,211,102,0.4); }
+  .footer { text-align: center; padding: 32px 20px 0; border-top: 1px solid var(--border); margin-top: 48px; }
+  .footer p { font-size: 12px; color: var(--text-dim); margin-bottom: 12px; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  @media (max-width: 640px) {
+    .fields-grid-pdh { grid-template-columns: 1fr; }
+    .field-row { grid-template-columns: 1fr; }
+    .products-grid { grid-template-columns: 1fr; }
+    .payment-options { grid-template-columns: 1fr; }
+    .step span { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-canvas"></div>
+<div class="grid-overlay"></div>
+
+<div class="page">
+
+  <div class="header">
+    <img src="logo-generasi.store.jpg" alt="Logo" style="width:120px;height:120px;object-fit:cover;border-radius:50%;margin:0 auto 20px;display:block;border:3px solid rgba(59,158,255,0.3);box-shadow:0 0 32px rgba(59,158,255,0.2);">
+    <h1>Atribut Panitia PKKMB UNS 2026</h1>
+    <label><h3>
+      👕 Paket Atribut Kerja Panitia<br>
+      📆 Periode Pembayaran: 7-10 Juni 2026
+    </h3></label>
+    <a href="https://wa.me/628886626945" target="_blank" class="contact-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Hubungi Kami
+    </a>
+  </div>
+
+  <div class="steps" id="stepsBar">
+    <div class="step active" id="step1"><div class="step-num">1</div><span>Produk</span></div>
+    <div class="step-line"></div>
+    <div class="step" id="step2"><div class="step-num">2</div><span>Identitas</span></div>
+    <div class="step-line"></div>
+    <div class="step" id="step3"><div class="step-num">3</div><span>Pembayaran</span></div>
+  </div>
+
+  <div class="section active" id="sec1">
+    <div class="section-title">Pilih Desain Atribut</div>
+    <div class="section-sub">Silakan klik pada salah satu desain di bawah ini untuk memilih item:</div>
+    
+    <div class="products-grid" id="productsGrid">
+      <div class="product-card" id="card-desain1" onclick="toggleProductSelection('desain1')">
+        <div class="product-img"><img src="desain1.jpg" alt="Desain 1" onerror="this.parentElement.innerHTML='👕'"></div>
+        <div class="product-info">
+          <div class="product-name">DESAIN 1</div>
+          <div class="product-price">Rp180.000</div>
+        </div>
+      </div>
+      <div class="product-card" id="card-desain2" onclick="toggleProductSelection('desain2')">
+        <div class="product-img"><img src="desain2.jpg" alt="Desain 2" onerror="this.parentElement.innerHTML='🧢'"></div>
+        <div class="product-info">
+          <div class="product-name">DESAIN 2</div>
+          <div class="product-price">Rp180.000</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="form-konfigurasi-bundling" style="display: none;">
+      
+      <div class="main-form-title">DETAIL PEMESANAN</div>
+
+      <div class="order-config" style="margin-bottom: 20px;">
+        <div class="order-config-title">Detail Pemilihan Warna</div>
+        <div class="detail-bundle-box">
+          <div class="detail-card">
+            <div class="detail-card-title">Pemilihan Warna Atribut</div>
+            <div class="field" id="f-warna-pdh">
+              <label>PILIH WARNA PDH</label>
+              <select id="warna-pdh" onchange="document.getElementById('f-warna-pdh').classList.remove('error')">
+                <option value="" disabled selected>Pilih Warna</option>
+                <option value="Biru">Biru</option>
+                <option value="Hijau">Hijau</option>
+                <option value="Merah">Merah</option>
+              </select>
+              <div class="error-msg">Warna harus dipilih</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-config">
+        <div class="order-config-title">Detail Pemesanan Atribut Paket Bundling</div>
+        <div class="detail-bundle-box">
+          
+          <div class="detail-card">
+            <div class="detail-card-title">Kelengkapan Paket (PDH + Lanyard + ID Card + Topi)</div>
+            <div class="size-note">📏 Ukuran di atas XXL dikenakan biaya tambahan +Rp10.000/pcs</div>
+            <img src="size-chart-atribut-panitia.jpg" alt="Size Chart PDH" class="size-chart-img" onerror="this.style.display='none'">
+            <div class="fields-grid-pdh">
+              <div class="field" id="f-nama-display">
+                <label>Nama Display PDH <span style="text-transform:none; color:var(--text-muted);">(maksimal 2 suku kata dibawah 15 huruf)</span></label>
+                <input type="text" id="prod-nama-display" placeholder="Nama yang tercetak di atribut">
+                <div class="error-msg">Nama atribut tidak boleh kosong</div>
+              </div>
+              <div class="field" id="f-ukuran">
+                <label>Ukuran PDH</label>
+                <select id="prod-ukuran" onchange="calculateBundleTotal(); document.getElementById('f-ukuran').classList.remove('error');">
+                  <option value="" disabled selected>Pilih Ukuran</option>
+                  <option value="XS">XS</option>
+                  <option value="S">S</option>
+                  <option value="M">M</option>
+                  <option value="L">L</option>
+                  <option value="XL">XL</option>
+                  <option value="XXL">XXL (+Rp10.000)</option>
+                  <option value="XXXL">XXXL (+Rp10.000)</option>
+                  <option value="XXXXL">XXXXL (+Rp10.000)</option>
+                </select>
+                <div class="error-msg">Ukuran harus dipilih</div>
+              </div>
+            </div>
+            <div class="field" style="margin-top: 14px;">
+              <label>Jumlah Paket</label>
+              <input type="text" inputmode="numeric" id="prod-qty-paket" value="1" oninput="calculateBundleTotal()">
+            </div>
+          </div>
+
+        </div>
+        
+        <div class="subtotal-container">
+          <div class="subtotal-text">Subtotal Pemesanan:</div>
+          <div class="subtotal-amount" id="bundleSubtotalLabel">Rp0</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="no-product-selected-alert" style="text-align: center; color: var(--text-muted); padding: 10px 0; font-size: 14px;">
+      ⚠️ Silakan ketuk/klik salah satu atau kedua item di atas untuk mulai memesan.
+    </div>
+    
+    <div class="nav-buttons">
+      <button class="btn-next" onclick="goToStep2()">Lanjut ke Identitas →</button>
+    </div>
+  </div>
+
+  <div class="section" id="sec2">
+    <div class="section-title">Data Diri</div>
+    <div class="section-sub">Isi identitas kamu sebagai panitia PKKMB UNS 2026</div>
+    <div class="order-config">
+      <div class="order-config-title">Informasi Pribadi</div>
+      <div class="field" id="f-nama">
+        <label>Nama Lengkap *</label>
+        <input type="text" id="inp-nama" placeholder="Masukkan nama lengkap sesuai KTM">
+        <div class="error-msg">Nama tidak boleh kosong</div>
+      </div>
+      <div class="field-row">
+        <div class="field" id="f-bidang">
+          <label>Jabatan / Bidang *</label>
+          <select id="inp-bidang" onchange="onBidangChange()">
+            <option value="" disabled selected>Pilih Jabatan/Bidang</option>
+            <option value="Ketua">Ketua</option>
+            <option value="Wakil Ketua">Wakil Ketua</option>
+            <option value="Acara">Acara</option>
+            <option value="Kesekretariatan">Kesekretariatan</option>
+            <option value="Keuangan">Keuangan</option>
+            <option value="Kurikulum">Kurikulum</option>
+            <option value="Media">Media</option>
+            <option value="Operasional">Operasional</option>
+            <option value="Relasi & Safety">Relasi &amp; Safety</option>
+          </select>
+          <div class="error-msg">Jabatan/Bidang harus dipilih</div>
+        </div>
+        <div class="field" id="f-divisi" style="display:none;">
+          <label>Divisi *</label>
+          <select id="inp-divisi">
+            <option value="" disabled selected>Pilih Divisi</option>
+          </select>
+          <div class="error-msg">Divisi harus dipilih</div>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field" id="f-telf">
+          <label>No. WhatsApp *</label>
+          <input type="tel" id="inp-telf" placeholder="08xxxxxxxxxx">
+          <div class="error-msg">Nomor tidak boleh kosong</div>
+        </div>
+        <div class="field" id="f-email">
+          <label>Email SSO *</label>
+          <input type="email" id="inp-email" placeholder="nama@student.uns.ac.id">
+          <div class="error-msg">Email tidak valid</div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn-back" onclick="goToStep(1)">← Kembali</button>
+      <button class="btn-next" onclick="goToStep3()">Lanjut ke Pembayaran →</button>
+    </div>
+  </div>
+
+  <div class="section" id="sec3">
+    <div class="section-title">Pembayaran</div>
+    <div class="section-sub">Pilih metode pembayaran dan upload bukti transfer</div>
+    <div class="order-config" id="orderSummary"></div>
+    <div class="total-box" id="totalBox"></div>
+    <div class="order-config">
+      <div class="order-config-title">Pilih Metode Pembayaran</div>
+      <div class="info-tag" id="dp-info-tag">💡 DP flat sebesar Rp100.000. Sisa pelunasan otomatis menyesuaikan saat pengambilan barang.</div>
+      <div class="payment-options">
+        <div class="payment-opt" onclick="selectPayment('dp', this)" id="opt-dp">
+          <div class="payment-opt-icon">💳</div>
+          <div class="payment-opt-title">Bayar DP</div>
+          <div class="payment-opt-desc">Pelunasan saat pengambilan</div>
+          <div class="payment-opt-amount" id="dp-amount">-</div>
+        </div>
+        <div class="payment-opt" onclick="selectPayment('lunas', this)" id="opt-lunas">
+          <div class="payment-opt-icon">✅</div>
+          <div class="payment-opt-title">Lunas</div>
+          <div class="payment-opt-desc">Bayar penuh langsung</div>
+          <div class="payment-opt-amount" id="lunas-amount">-</div>
+        </div>
+      </div>
+      <div class="qris-box">
+        <div class="qris-img">
+          <img src="qris_genmud.jpeg" alt="QRIS" onerror="this.parentElement.innerHTML='<div style=\'text-align:center;color:#333\'><div style=\'font-size:32px\'>📱</div><div style=\'font-size:11px;margin-top:6px;font-weight:600\'>QRIS<br>PKKMB UNS</div></div>'">
+        </div>
+        <div class="qris-label">Scan QRIS untuk membayar ke</div>
+        <div class="qris-name">Panitia PKKMB UNS 2026</div>
+      </div>
+      <div class="field">
+        <label>Upload Bukti Pembayaran *</label>
+        <div class="upload-zone" id="uploadZone">
+          <input type="file" accept="image/*" id="buktiFile" onchange="handleUpload(this)">
+          <div class="upload-icon">📎</div>
+          <div class="upload-text"><span>Klik untuk upload</span> atau drag & drop</div>
+          <div class="upload-sub">Format JPG, PNG · Maks 5MB</div>
+          <div class="upload-preview" id="uploadPreview"></div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn-back" onclick="goToStep(2)">← Kembali</button>
+      <button class="btn-submit" id="btnSubmit" onclick="submitOrder()">🚀 Kirimkan Pesanan</button>
+    </div>
+  </div>
+
+  <div class="section" id="secSuccess">
+    <div class="success-screen">
+      <div class="success-icon">✅</div>
+      <div class="success-title">Pesanan Terkirim!</div>
+      <p class="success-sub" id="successMsg">Pesanan kamu sudah masuk ke sistem kami.<br>Panitia akan menghubungi kamu jika ada kendala.</p>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>Ada pertanyaan seputar pemesanan atribut?</p>
+    <a href="https://wa.me/628886626945" target="_blank" class="contact-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Hubungi Kami via WhatsApp
+    </a>
+  </div>
+
+</div>
+
+<script>
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxHsdfYNC_aDuG8m3shNoOReZImYxDmspT7WDTyVYuTSpa0Bn6iR6HgkKEcyw0mvWaP/exec';
+
+  const selectedProducts = {
+    desain1: false,
+    desain2: false
+  };
+
+  const hargaDasarPaket = 180000;
+
+  const bundle = {
+    totalHarga: 0, 
+    totalDp: 100000, 
+    upsizeCost: 0, 
+    namaDisplay: '', 
+    warna: '', 
+    ukuran: '', 
+    qtyPaket: 1
+  };
+  
+  let paymentType = null, uploadedFile = null, currentStep = 1;
+
+  document.addEventListener('wheel', function(e) {
+    if (document.activeElement && document.activeElement.tagName === 'SELECT') {
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key !== 'Enter') return;
+    if (document.activeElement && document.activeElement.tagName === 'SELECT') return;
+    e.preventDefault();
+    if (currentStep === 1) goToStep2();
+    else if (currentStep === 2) goToStep3();
+  });
+
+  function toggleProductSelection(id) {
+    if (id === 'desain1') {
+      selectedProducts.desain1 = !selectedProducts.desain1;
+      selectedProducts.desain2 = false;
+    } else {
+      selectedProducts.desain2 = !selectedProducts.desain2;
+      selectedProducts.desain1 = false;
+    }
+    
+    document.querySelectorAll('.product-card').forEach(card => card.classList.remove('selected'));
+    
+    const activeCard = document.getElementById('card-' + id);
+    const formKonfigurasi = document.getElementById('form-konfigurasi-bundling');
+    const grid = document.getElementById('productsGrid');
+
+    if (selectedProducts.desain1 || selectedProducts.desain2) {
+      activeCard.classList.add('selected');
+      formKonfigurasi.style.display = 'block';
+      grid.classList.add('has-selection');
+      document.getElementById('no-product-selected-alert').style.display = 'none';
+    } else {
+      formKonfigurasi.style.display = 'none';
+      grid.classList.remove('has-selection');
+      document.getElementById('no-product-selected-alert').style.display = 'block';
+    }
+    
+    calculateBundleTotal();
+  }
+
+  const BIDANG_DIVISI = {
+    'Ketua': [], 'Wakil Ketua': [],
+    'Acara': ['Event', 'Inovasi & Kreatif'],
+    'Kesekretariatan': ['Sekretaris', 'Perizinan'],
+    'Keuangan': ['Fundraising', 'Sponsorship', 'Controlling'],
+    'Kurikulum': ['Materi Kreatif & Asesor', 'Fasilitator'],
+    'Media': ['Dokumentasi, Videografi, & Editing', 'Desain Visual', 'Branding & Publikasi'],
+    'Operasional': ['Logistik', 'Transportasi & Konsumsi'],
+    'Relasi & Safety': ['Medis', 'Keamanan', 'Hubungan Eksternal'],
+  };
+
+  function onBidangChange() {
+    const bidang = document.getElementById('inp-bidang').value;
+    const divisiField = document.getElementById('f-divisi');
+    const divisiSelect = document.getElementById('inp-divisi');
+    const subDivisi = BIDANG_DIVISI[bidang] || [];
+    if (subDivisi.length === 0) {
+      divisiField.style.display = 'none';
+      divisiSelect.value = '';
+    } else {
+      divisiField.style.display = 'block';
+      divisiSelect.innerHTML = '<option value="" disabled selected>Pilih Divisi</option>';
+      subDivisi.forEach(d => {
+        const opt = document.createElement('option');
+        opt.value = d; opt.textContent = d;
+        divisiSelect.appendChild(opt);
+      });
+    }
+    document.getElementById('f-bidang').classList.remove('error');
+    document.getElementById('f-divisi').classList.remove('error');
+  }
+
+  function calculateBundleTotal() {
+    const ukuran = document.getElementById('prod-ukuran').value;
+    const qtyPaket = parseInt(document.getElementById('prod-qty-paket').value) || 1;
+    
+    bundle.ukuran = ukuran; 
+    bundle.qtyPaket = qtyPaket;
+    
+    const upsizePerPcs = ['XXL','XXXL','XXXXL'].includes(ukuran) ? 10000 : 0;
+    bundle.upsizeCost = upsizePerPcs * qtyPaket;
+    
+    if (selectedProducts.desain1 || selectedProducts.desain2) {
+      bundle.totalHarga = (hargaDasarPaket * qtyPaket) + bundle.upsizeCost;
+    } else {
+      bundle.totalHarga = 0;
+    }
+    
+    bundle.totalDp = (selectedProducts.desain1 || selectedProducts.desain2) ? 100000 : 0;
+    document.getElementById('bundleSubtotalLabel').textContent = formatRp(bundle.totalHarga);
+  }
+
+  function updateStepsUI() {
+    [1,2,3].forEach(i => {
+      const el = document.getElementById('step' + i);
+      el.classList.remove('active','done');
+      if (i < currentStep) el.classList.add('done');
+      if (i === currentStep) el.classList.add('active');
+    });
+  }
+
+  function goToStep(n) {
+    currentStep = n;
+    updateStepsUI();
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('sec' + n).add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function goToStep2() {
+    if (!selectedProducts.desain1 && !selectedProducts.desain2) {
+      alert('Silakan pilih salah satu desain terlebih dahulu!');
+      return;
+    }
+
+    const warna = document.getElementById('warna-pdh').value;
+    const namaDisplay = document.getElementById('prod-nama-display').value.trim();
+    const ukuran = document.getElementById('prod-ukuran').value;
+    const qtyPaket = parseInt(document.getElementById('prod-qty-paket').value) || 0;
+    
+    document.getElementById('f-warna-pdh').classList.toggle('error', !warna);
+    document.getElementById('f-nama-display').classList.toggle('error', !namaDisplay);
+    document.getElementById('f-ukuran').classList.toggle('error', !ukuran);
+    
+    if (!warna || !namaDisplay || !ukuran) return;
+    if (qtyPaket < 1) { alert('Jumlah kuantitas paket tidak boleh kosong/0!'); return; }
+    
+    bundle.warna = warna;
+    bundle.namaDisplay = namaDisplay;
+    
+    goToStep(2);
+  }
+
+  function goToStep3() {
+    const bidang = document.getElementById('inp-bidang').value;
+    const subDivisi = BIDANG_DIVISI[bidang] || [];
+    const divisi = document.getElementById('inp-divisi').value;
+    const nama = document.getElementById('inp-nama').value;
+    const telf = document.getElementById('inp-telf').value;
+    const email = document.getElementById('inp-email').value;
+    let valid = true;
+    
+    document.getElementById('f-nama').classList.toggle('error', !nama.trim());
+    document.getElementById('f-bidang').classList.toggle('error', !bidang);
+    if (subDivisi.length > 0) {
+      document.getElementById('f-divisi').classList.toggle('error', !divisi);
+      if (!divisi) valid = false;
+    }
+    document.getElementById('f-telf').classList.toggle('error', !telf.trim());
+    document.getElementById('f-email').classList.toggle('error', !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
+    
+    if (!nama.trim() || !bidang || !telf.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) valid = false;
+    if (!valid) return;
+    
+    renderPaymentStep();
+    goToStep(3);
+  }
+
+  function renderPaymentStep() {
+    const namaDesainTerpilih = selectedProducts.desain1 ? "Desain 1" : "Desain 2";
+    let html = `<div class="order-config-title">Ringkasan Pesanan</div><div class="total-rows">`;
+    
+    html += `<div class="total-row">
+      <span class="label-t">📦 Paket Atribut (${namaDesainTerpilih}) (${bundle.qtyPaket}x)<br><small style="color:var(--text-dim)">Warna: ${bundle.warna} · Size: ${bundle.ukuran}</small></span>
+      <span class="val">${formatRp(hargaDasarPaket * bundle.qtyPaket)}</span>
+    </div>`;
+    
+    if (bundle.upsizeCost > 0) {
+      html += `<div class="total-row" style="margin-top:4px">
+        <span class="label-t">➕ Biaya Upsize ${bundle.ukuran} (${bundle.qtyPaket}x)</span>
+        <span class="val" style="color:var(--accent3)">+${formatRp(bundle.upsizeCost)}</span>
+      </div>`;
+    }
+    
+    html += `<div class="total-row" style="margin-top:4px; margin-bottom:8px; padding-bottom:4px; border-bottom:1px dashed rgba(255,255,255,0.05)">
+      <span class="label-t">✏️ Nama Atribut</span>
+      <span class="val" style="color:var(--accent)">"${bundle.namaDisplay}"</span>
+    </div>`;
+    
+    html += `</div>`;
+    document.getElementById('orderSummary').innerHTML = html;
+    
+    document.getElementById('totalBox').innerHTML = `<div class="total-rows">
+      <div class="total-row"><span class="label-t">Total Harga Atribut</span><span class="val">${formatRp(bundle.totalHarga)}</span></div>
+      <div class="total-row grand"><span class="label-t">Total Pembayaran</span><span class="val" id="totalDisplay">${formatRp(bundle.totalHarga)}</span></div>
+    </div>`;
+    
+    document.getElementById('dp-amount').textContent = formatRp(bundle.totalDp);
+    document.getElementById('lunas-amount').textContent = formatRp(bundle.totalHarga);
+    
+    paymentType = null;
+    document.getElementById('opt-dp').classList.remove('selected');
+    document.getElementById('opt-lunas').classList.remove('selected');
+  }
+
+  function selectPayment(type, el) {
+    paymentType = type;
+    document.querySelectorAll('.payment-opt').forEach(e => e.classList.remove('selected'));
+    el.classList.add('selected');
+    const amt = type === 'dp' ? bundle.totalDp : bundle.totalHarga;
+    document.getElementById('totalDisplay').textContent = formatRp(amt) + (type === 'dp' ? ' (DP Flat)' : ' (Lunas)');
+  }
+
+  function handleUpload(input) {
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      if (file.size > 5 * 1024 * 1024) { alert('Ukuran file maksimal 5MB!'); return; }
+      uploadedFile = file;
+      document.getElementById('uploadPreview').textContent = '✓ ' + file.name;
+      document.getElementById('uploadZone').classList.add('has-file');
+    }
+  }
+
+  async function submitOrder() {
+    if (!paymentType) { alert('Pilih metode pembayaran dulu!'); return; }
+    if (!uploadedFile) { alert('Upload bukti pembayaran dulu!'); return; }
+    const btn = document.getElementById('btnSubmit');
+    btn.textContent = '⏳ Mengirim...'; btn.disabled = true;
+    const bayar = paymentType === 'dp' ? bundle.totalDp : bundle.totalHarga;
+    const nama = document.getElementById('inp-nama').value;
+    const email = document.getElementById('inp-email').value;
+    const telepon = document.getElementById('inp-telf').value;
+    const reader = new FileReader();
+    reader.readAsDataURL(uploadedFile);
+    reader.onerror = () => { alert('Gagal membaca file. Coba upload ulang.'); btn.textContent = '🚀 Kirimkan Pesanan'; btn.disabled = false; };
+    reader.onload = async () => {
+      
+      const namaDesainTerpilih = selectedProducts.desain1 ? "Desain 1" : "Desain 2";
+      let strProduk = `Paket Bundling ${namaDesainTerpilih} x${bundle.qtyPaket} [Warna: ${bundle.warna}, Size: ${bundle.ukuran}, Cetak Nama: ${bundle.namaDisplay}]`;
+
+      const payload = {
+        timestamp: new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' }),
+        nama, bidang: document.getElementById('inp-bidang').value,
+        divisi: document.getElementById('inp-divisi').value || '-',
+        telepon, email, namaAtribut: bundle.namaDisplay,
+        ukuranPdh: bundle.ukuran, 
+        qtyPdh: bundle.qtyPaket, 
+        qtyTopi: bundle.qtyPaket,
+        produk: strProduk,
+        totalOrder: formatRp(bundle.totalHarga),
+        upsizeCost: bundle.upsizeCost > 0 ? formatRp(bundle.upsizeCost) : '-',
+        metodePembayaran: paymentType === 'dp' ? 'DP' : 'Lunas',
+        jumlahDibayar: formatRp(bayar), buktiBayar: reader.result
+      };
+      try {
+        await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById('secSuccess').classList.add('active');
+        document.getElementById('stepsBar').style.display = 'none';
+        document.getElementById('successMsg').innerHTML = `Terima kasih, <strong>${nama}</strong>! 🎉<br>Pesanan kamu sudah masuk ke sistem kami.<br>Panitia akan menghubungi kamu jika ada kendala.`;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (err) {
+        alert('Gagal mengirim pesanan. Periksa koneksi internet kamu lalu coba lagi.');
+        btn.textContent = '🚀 Kirimkan Pesanan'; btn.disabled = false;
+      }
+    };
+  }
+
+  function formatRp(n) { return 'Rp' + Number(n).toLocaleString('id-ID'); }
+</script>
+
+</body>
+</html>
