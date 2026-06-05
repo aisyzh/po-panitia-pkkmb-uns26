@@ -602,7 +602,7 @@
     currentStep = n;
     updateStepsUI();
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.getElementById('sec' + n).add('active');
+    document.getElementById('sec' + n).classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
