@@ -506,7 +506,7 @@
 </div>
 
 <script>
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzwjeDlCjJhjq2KRu-QcLGi-HDaCrdnvmrJvk6jDXkKz8dtEMCEvgtl0pkMTfc0bhBp/exec';
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz7O-7wbG3u28A3BEYLW5DHn6LiSfaJwgBZtyYPPpi2PPeP3BSPfi76vtBouRHMbGBb/exec';
 
   const selectedProducts = { desain1: false, desain2: false };
   const hargaDasarPaket = 180000;
@@ -715,6 +715,7 @@
         nama, bidang: document.getElementById('inp-bidang').value,
         divisi: document.getElementById('inp-divisi').value || '-',
         telepon, email, namaAtribut: bundle.namaDisplay,
+        warnaPdh: bundle.warna, desain: namaDesainTerpilih,
         ukuranPdh: bundle.ukuran, qtyPdh: bundle.qtyPaket, qtyTopi: bundle.qtyPaket,
         produk: strProduk, totalOrder: formatRp(bundle.totalHarga),
         upsizeCost: bundle.upsizeCost > 0 ? formatRp(bundle.upsizeCost) : '-',
