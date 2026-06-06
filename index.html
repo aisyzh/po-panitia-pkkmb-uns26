@@ -682,7 +682,7 @@
     document.querySelectorAll('.payment-opt').forEach(e => e.classList.remove('selected'));
     el.classList.add('selected');
     const amt = type === 'dp' ? bundle.totalDp : bundle.totalHarga;
-    document.getElementById('totalDisplay').textContent = formatRp(amt) + (type === 'dp' ? ' (DP Flat)' : ' (Lunas)');
+    document.getElementById('totalDisplay').textContent = formatRp(amt) + (type === 'dp' ? ' (DP)' : ' (Lunas)');
   }
 
   function handleUpload(input) {
