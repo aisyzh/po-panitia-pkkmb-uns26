@@ -369,7 +369,7 @@
     <div class="total-box" id="totalBox"></div>
     <div class="order-config">
       <div class="order-config-title">Pilih Metode Pembayaran</div>
-      <div class="info-tag" id="dp-info-tag">💡 DP sebesar Rp100.000. Sisa pelunasan dibayarkan saat pengambilan barang.</div>
+      <div class="info-tag" id="dp-info-tag">💡 DP sebesar Rp80.000. Sisa pelunasan dibayarkan saat pengambilan barang.</div>
       <div class="payment-options">
         <div class="payment-opt" onclick="selectPayment('dp', this)" id="opt-dp">
           <div class="payment-opt-icon">💳</div>
@@ -430,7 +430,7 @@
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz7O-7wbG3u28A3BEYLW5DHn6LiSfaJwgBZtyYPPpi2PPeP3BSPfi76vtBouRHMbGBb/exec';
 
   const hargaDasarPaket = 180000;
-  const bundle = { totalHarga: 0, totalDp: 100000, upsizeCost: 0, namaDisplay: '', ukuran: '', qtyPaket: 1 };
+  const bundle = { totalHarga: 0, totalDp: 80000, upsizeCost: 0, namaDisplay: '', ukuran: '', qtyPaket: 1 };
   let paymentType = null, uploadedFile = null, currentStep = 1;
 
   document.addEventListener('wheel', function(e) {
@@ -479,7 +479,7 @@
     const upsizePerPcs = ['XXL','XXXL','XXXXL'].includes(ukuran) ? 10000 : 0;
     bundle.upsizeCost = upsizePerPcs * qtyPaket;
     bundle.totalHarga = (hargaDasarPaket * qtyPaket) + bundle.upsizeCost;
-    bundle.totalDp = 100000;
+    bundle.totalDp = 80000;
     document.getElementById('bundleSubtotalLabel').textContent = formatRp(bundle.totalHarga);
   }
 
