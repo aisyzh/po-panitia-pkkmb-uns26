@@ -50,14 +50,8 @@
     display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 8px; animation: fadeUp .5s .2s ease both; opacity: 0;
     color: var(--text-muted); font-size: 14px; line-height: 1.8; margin-top: 16px;
   }
-  
-  .header-meta .badge-items {
-    font-weight: 500; color: var(--text); font-size: 15px;
-  }
-
-  .header-meta .badge-dates {
-    font-weight: 500; color: var(--text); font-size: 15px;
-  }
+  .header-meta .badge-items { font-weight: 500; color: var(--text); font-size: 15px; }
+  .header-meta .badge-dates { font-weight: 500; color: var(--text); font-size: 15px; }
 
   /* STEPS */
   .steps {
@@ -82,16 +76,6 @@
   .section-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 6px; }
   .section-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; }
 
-  /* FORM SECTION TITLE */
-  .main-form-title {
-    font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800;
-    letter-spacing: 0.5px; text-transform: uppercase; margin: 40px 0 20px 0;
-    background: linear-gradient(135deg, #fff 40%, var(--text-muted));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    display: flex; align-items: center; gap: 10px;
-  }
-  .main-form-title::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); margin-left: 4px; }
-
   /* CONFIG BLOCKS */
   .order-config { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; }
   .order-config-title {
@@ -103,7 +87,7 @@
 
   /* DETAIL CARDS */
   .detail-bundle-box { display: flex; flex-direction: column; gap: 20px; }
-  .detail-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 20px; transition: opacity 0.3s; }
+  .detail-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 20px; }
   .detail-card-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: var(--accent); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); }
   .size-chart-img { width: 100%; max-width: 480px; border-radius: 8px; margin-bottom: 16px; display: block; border: 1px solid var(--border); }
   .size-note { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; background: rgba(255,213,60,0.07); border: 1px solid rgba(255,213,60,0.15); border-radius: 8px; padding: 10px 14px; line-height: 1.5; }
@@ -162,7 +146,7 @@
 
   /* QRIS */
   .qris-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px 24px; text-align: center; margin-bottom: 20px; }
-  .qris-img { width: 240px; height: 240px; margin: 0 auto 14px; background: #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center; padding: 12px; overflow: visible; }
+  .qris-img { width: 240px; height: 240px; margin: 0 auto 14px; background: #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center; padding: 12px; }
   .qris-img img { width: 100%; height: 100%; object-fit: contain; display: block; }
   .qris-label { font-size: 13px; color: var(--text-muted); margin-bottom: 4px; }
   .qris-name { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; }
@@ -236,8 +220,8 @@
     <img src="logo-generasi.store.jpg" alt="Logo" style="width:120px;height:120px;object-fit:cover;border-radius:50%;margin:0 auto 24px;display:block;border:3px solid rgba(59,158,255,0.3);box-shadow:0 0 32px rgba(59,158,255,0.2);">
     <h1>Atribut Panitia PKKMB UNS 2026</h1>
     <div class="header-meta">
-      <div class="badge-items"><h3>👕 Paket Atribut sudah termasuk PDH + LANYARD + ID CARD + TOPI</h3></div>
-      <div class="badge-dates"><h3>📆 Periode Pembayaran: 11-13 JUNI 2026</h3></div>
+      <div class="badge-items">👕 Paket Atribut sudah termasuk PDH + LANYARD + ID CARD + TOPI</div>
+      <div class="badge-dates">📆 Periode Pembayaran: 11–13 JUNI 2026</div>
     </div>
     <a href="https://wa.me/628886626945" target="_blank" class="contact-btn">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
@@ -289,12 +273,10 @@
           <div class="error-msg">Divisi harus dipilih</div>
         </div>
       </div>
-      <div class="field-row">
-        <div class="field" id="f-telf">
-          <label>No. WhatsApp *</label>
-          <input type="tel" id="inp-telf" placeholder="08xxxxxxxxxx" autocomplete="off">
-          <div class="error-msg">Nomor tidak boleh kosong</div>
-        </div>
+      <div class="field" id="f-telf">
+        <label>No. WhatsApp *</label>
+        <input type="tel" id="inp-telf" placeholder="08xxxxxxxxxx" autocomplete="off">
+        <div class="error-msg">Nomor tidak boleh kosong</div>
       </div>
     </div>
     <div class="nav-buttons">
@@ -307,11 +289,9 @@
     <div class="section-title">Detail Atribut</div>
     <div class="section-sub">Lengkapi detail pemesanan paket atribut kamu</div>
 
-    <!-- Preview desain1 -->
     <div class="order-config" style="margin-bottom:20px;text-align:center;">
       <div class="order-config-title">Desain Atribut</div>
-
-      <img src="PDH 1.jpg.jpeg" alt="PDH" style=" width:100%; max-width:450px; display:block; margin:0 auto; border-radius:12px;" onerror="this.style.display='none'">
+      <img src="PDH 1.jpg.jpeg" alt="PDH" style="width:100%;max-width:450px;display:block;margin:0 auto;border-radius:12px;" onerror="this.style.display='none'">
     </div>
 
     <div class="order-config">
@@ -323,7 +303,7 @@
           <img src="size-chart-atribut-panitia.jpg" alt="Size Chart PDH" class="size-chart-img" onerror="this.style.display='none'">
           <div class="fields-grid-pdh">
             <div class="field" id="f-nama-display">
-              <label>Nama Display PDH <span style="text-transform:none; color:var(--text-muted);">(maksimal 2 suku kata dibawah 15 huruf)</span></label>
+              <label>Nama Display PDH <span style="text-transform:none;color:var(--text-muted);">(maks. 2 suku kata, bawah 15 huruf)</span></label>
               <input type="text" id="prod-nama-display" placeholder="Nama yang tercetak di atribut">
               <div class="error-msg">Nama atribut tidak boleh kosong</div>
             </div>
@@ -343,16 +323,15 @@
               <div class="error-msg">Ukuran harus dipilih</div>
             </div>
           </div>
-          <div class="field" style="margin-top: 16px;">
+          <div class="field" style="margin-top:16px;">
             <label>Jumlah Paket</label>
             <input type="text" inputmode="numeric" id="prod-qty-paket" value="1" oninput="calculateBundleTotal()">
           </div>
         </div>
       </div>
-
       <div class="subtotal-container">
         <div class="subtotal-text">Subtotal Pemesanan:</div>
-        <div class="subtotal-amount" id="bundleSubtotalLabel">Rp0</div>
+        <div class="subtotal-amount" id="bundleSubtotalLabel">Rp180.000</div>
       </div>
     </div>
 
@@ -362,6 +341,7 @@
     </div>
   </div>
 
+  <!-- STEP 3: Pembayaran -->
   <div class="section" id="sec3">
     <div class="section-title">Pembayaran</div>
     <div class="section-sub">Pilih metode pembayaran dan upload bukti transfer</div>
@@ -369,12 +349,12 @@
     <div class="total-box" id="totalBox"></div>
     <div class="order-config">
       <div class="order-config-title">Pilih Metode Pembayaran</div>
-      <div class="info-tag" id="dp-info-tag">💡 DP sebesar Rp80.000. Sisa pelunasan dibayarkan saat termin 2 (7-10 Juli 2026).</div>
+      <div class="info-tag">💡 DP sebesar Rp80.000. Sisa pelunasan dibayarkan saat termin 2 (7–10 Juli 2026).</div>
       <div class="payment-options">
         <div class="payment-opt" onclick="selectPayment('dp', this)" id="opt-dp">
           <div class="payment-opt-icon">💳</div>
           <div class="payment-opt-title">Bayar DP</div>
-          <div class="payment-opt-desc">Pelunasan saat pengambilan</div>
+          <div class="payment-opt-desc">Pelunasan saat termin 2</div>
           <div class="payment-opt-amount" id="dp-amount">-</div>
         </div>
         <div class="payment-opt" onclick="selectPayment('lunas', this)" id="opt-lunas">
@@ -427,10 +407,11 @@
 </div>
 
 <script>
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz7O-7wbG3u28A3BEYLW5DHn6LiSfaJwgBZtyYPPpi2PPeP3BSPfi76vtBouRHMbGBb/exec';
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx-No0ADaMq9rXkCOCzxELKyyZFujzhkU18xnyDnLHLTVDN9-VQvv2_xpgqSbwFS8kK/exec';
 
   const hargaDasarPaket = 180000;
-  const bundle = { totalHarga: 0, totalDp: 80000, upsizeCost: 0, namaDisplay: '', ukuran: '', qtyPaket: 1 };
+  const DP_AMOUNT = 80000;
+  const bundle = { totalHarga: 0, totalDp: DP_AMOUNT, upsizeCost: 0, namaDisplay: '', ukuran: '', qtyPaket: 1 };
   let paymentType = null, uploadedFile = null, currentStep = 1;
 
   document.addEventListener('wheel', function(e) {
@@ -448,12 +429,12 @@
   const BIDANG_DIVISI = {
     'Ketua': [], 'Wakil Ketua': [],
     'Acara': ['Kepala Bidang Acara', 'Event', 'Inovasi & Kreatif'],
-    'Kesekretariatan': ['Kepala Bidang Kesekretariatan','Sekretaris', 'Perizinan'],
-    'Keuangan': ['Kepala Bidang Keuangan','Fundraising', 'Sponsorship', 'Controlling'],
-    'Kurikulum': ['Kepala Bidang Kurikulum','Materi Kreatif & Asesor', 'Fasilitator'],
-    'Media': ['Kepala Bidang Media','Dokumentasi, Videografi, & Editing', 'Desain Visual', 'Branding & Publikasi'],
-    'Operasional': ['Kepala Bidang Operasional','Logistik', 'Transportasi & Konsumsi'],
-    'Relasi & Safety': ['Kepala Bidang Relasi & Safety','Medis', 'Keamanan', 'Hubungan Eksternal'],
+    'Kesekretariatan': ['Kepala Bidang Kesekretariatan', 'Sekretaris', 'Perizinan'],
+    'Keuangan': ['Kepala Bidang Keuangan', 'Fundraising', 'Sponsorship', 'Controlling'],
+    'Kurikulum': ['Kepala Bidang Kurikulum', 'Materi Kreatif & Asesor', 'Fasilitator'],
+    'Media': ['Kepala Bidang Media', 'Dokumentasi, Videografi, & Editing', 'Desain Visual', 'Branding & Publikasi'],
+    'Operasional': ['Kepala Bidang Operasional', 'Logistik', 'Transportasi & Konsumsi'],
+    'Relasi & Safety': ['Kepala Bidang Relasi & Safety', 'Medis', 'Keamanan', 'Hubungan Eksternal'],
   };
 
   function onBidangChange() {
@@ -479,7 +460,7 @@
     const upsizePerPcs = ['XXL','XXXL','XXXXL'].includes(ukuran) ? 10000 : 0;
     bundle.upsizeCost = upsizePerPcs * qtyPaket;
     bundle.totalHarga = (hargaDasarPaket * qtyPaket) + bundle.upsizeCost;
-    bundle.totalDp = 80000;
+    bundle.totalDp = DP_AMOUNT;
     document.getElementById('bundleSubtotalLabel').textContent = formatRp(bundle.totalHarga);
   }
 
@@ -500,22 +481,26 @@
   }
 
   function goToStep2() {
-    // Validasi identitas (step 1)
-    const namaEl = document.getElementById('inp-nama');
+    const namaEl   = document.getElementById('inp-nama');
     const bidangEl = document.getElementById('inp-bidang');
     const divisiEl = document.getElementById('inp-divisi');
-    const telfEl = document.getElementById('inp-telf');
+    const telfEl   = document.getElementById('inp-telf');
 
-    const nama = namaEl.value.trim();
+    [namaEl, telfEl].forEach(el => el.dispatchEvent(new Event('input', { bubbles: true })));
+
+    const nama   = namaEl.value.trim();
     const bidang = bidangEl.value;
     const divisi = divisiEl.value;
-    const telf = telfEl.value.trim();
+    const telf   = telfEl.value.trim();
     const subDivisi = BIDANG_DIVISI[bidang] || [];
     let valid = true;
 
     document.getElementById('f-nama').classList.toggle('error', !nama);
     document.getElementById('f-bidang').classList.toggle('error', !bidang);
-    if (subDivisi.length > 0) { document.getElementById('f-divisi').classList.toggle('error', !divisi); if (!divisi) valid = false; }
+    if (subDivisi.length > 0) {
+      document.getElementById('f-divisi').classList.toggle('error', !divisi);
+      if (!divisi) valid = false;
+    }
     document.getElementById('f-telf').classList.toggle('error', !telf);
     if (!nama || !bidang || !telf) valid = false;
     if (!valid) return;
@@ -523,7 +508,6 @@
   }
 
   function goToStep3() {
-    // Validasi detail atribut (step 2)
     const namaDisplay = document.getElementById('prod-nama-display').value.trim();
     const ukuran = document.getElementById('prod-ukuran').value;
     const qtyPaket = parseInt(document.getElementById('prod-qty-paket').value) || 0;
@@ -536,11 +520,11 @@
   }
 
   function renderPaymentStep() {
-    const namaDesainTerpilih = "PDH Panitia PKKMB UNS 2026";
+    const sisaBayar = bundle.totalHarga - bundle.totalDp;
     let html = `<div class="order-config-title">Ringkasan Pesanan</div><div class="total-rows">`;
     html += `<div class="total-row">
-      <span class="label-t">📦 Paket Atribut (${namaDesainTerpilih}) (${bundle.qtyPaket}x)<br> <Size: ${bundle.ukuran}</small></span>
-      <span class="val">${formatRp(hargaDasarPaket * bundle.qtyPaket)}
+      <span class="label-t">📦 Paket Atribut PDH Panitia PKKMB UNS 2026 (${bundle.qtyPaket}x) &middot; Size: ${bundle.ukuran}</span>
+      <span class="val">${formatRp(hargaDasarPaket * bundle.qtyPaket)}</span>
     </div>`;
     if (bundle.upsizeCost > 0) {
       html += `<div class="total-row" style="margin-top:4px">
@@ -548,13 +532,15 @@
         <span class="val" style="color:var(--accent3)">+${formatRp(bundle.upsizeCost)}</span>
       </div>`;
     }
-    html += `<div class="total-row" style="margin-top:4px; margin-bottom:8px; padding-bottom:4px; border-bottom:1px dashed rgba(255,255,255,0.05)">
+    html += `<div class="total-row" style="margin-top:4px;margin-bottom:8px;padding-bottom:4px;border-bottom:1px dashed rgba(255,255,255,0.05)">
       <span class="label-t">✏️ Nama Atribut</span>
       <span class="val" style="color:var(--accent)">"${bundle.namaDisplay}"</span>
     </div></div>`;
     document.getElementById('orderSummary').innerHTML = html;
     document.getElementById('totalBox').innerHTML = `<div class="total-rows">
       <div class="total-row"><span class="label-t">Total Harga Atribut</span><span class="val">${formatRp(bundle.totalHarga)}</span></div>
+      <div class="total-row"><span class="label-t">Jika DP — Bayar Sekarang</span><span class="val" style="color:var(--accent3)">${formatRp(bundle.totalDp)}</span></div>
+      <div class="total-row"><span class="label-t">Jika DP — Sisa Pelunasan</span><span class="val" style="color:var(--accent3)">${formatRp(sisaBayar)}</span></div>
       <div class="total-row grand"><span class="label-t">Total Pembayaran</span><span class="val" id="totalDisplay">${formatRp(bundle.totalHarga)}</span></div>
     </div>`;
     document.getElementById('dp-amount').textContent = formatRp(bundle.totalDp);
@@ -588,24 +574,31 @@
     const btn = document.getElementById('btnSubmit');
     btn.textContent = '⏳ Mengirim...'; btn.disabled = true;
     const bayar = paymentType === 'dp' ? bundle.totalDp : bundle.totalHarga;
-    const nama = document.getElementById('inp-nama').value.trim();
+    const sisaBayar = paymentType === 'dp' ? (bundle.totalHarga - bundle.totalDp) : 0;
+    const nama    = document.getElementById('inp-nama').value.trim();
+    const bidang  = document.getElementById('inp-bidang').value;
+    const divisi  = document.getElementById('inp-divisi').value || '-';
     const telepon = document.getElementById('inp-telf').value.trim();
     const reader = new FileReader();
     reader.readAsDataURL(uploadedFile);
     reader.onerror = () => { alert('Gagal membaca file. Coba upload ulang.'); btn.textContent = '🚀 Kirimkan Pesanan'; btn.disabled = false; };
     reader.onload = async () => {
-      const namaDesainTerpilih = "PDH Panitia PKKMB UNS 2026";
-      let strProduk = `Paket Bundling ${namaDesainTerpilih} x${bundle.qtyPaket}, Size: ${bundle.ukuran}, Cetak Nama: ${bundle.namaDisplay}]`;
       const payload = {
-        timestamp: new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' }),
-        nama, bidang: document.getElementById('inp-bidang').value,
-        divisi: document.getElementById('inp-divisi').value || '-',
-        namaAtribut: bundle.namaDisplay,
-        ukuranPdh: bundle.ukuran, qtyPdh: bundle.qtyPaket, qtyTopi: bundle.qtyPaket,
-        produk: strProduk, totalOrder: formatRp(bundle.totalHarga),
-        upsizeCost: bundle.upsizeCost > 0 ? formatRp(bundle.upsizeCost) : '-',
+        timestamp:        new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' }),
+        nama,
+        bidang,
+        divisi,
+        telepon,
+        namaAtribut:      bundle.namaDisplay,
+        ukuranPdh:        bundle.ukuran,
+        qtyPdh:           bundle.qtyPaket,
+        qtyTopi:          bundle.qtyPaket,
+        totalOrder:       formatRp(bundle.totalHarga),
+        upsizeCost:       bundle.upsizeCost > 0 ? formatRp(bundle.upsizeCost) : '-',
         metodePembayaran: paymentType === 'dp' ? 'DP' : 'Lunas',
-        jumlahDibayar: formatRp(bayar), buktiBayar: reader.result
+        jumlahDibayar:    formatRp(bayar),
+        sisaPelunasan:    paymentType === 'dp' ? formatRp(sisaBayar) : 'LUNAS',
+        buktiBayar:       reader.result
       };
       try {
         await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
@@ -623,7 +616,6 @@
 
   function formatRp(n) { return 'Rp' + Number(n).toLocaleString('id-ID'); }
 
-  // Inisialisasi subtotal di awal
   calculateBundleTotal();
 </script>
 
